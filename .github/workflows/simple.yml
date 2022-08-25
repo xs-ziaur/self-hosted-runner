@@ -1,30 +1,37 @@
-# This is a basic workflow to help you get  started with Actions
+name: tests
 
-name: Simple
-
-# controls when the workflow will run
 on:
-  pull:
-    branches: [ main ]
   push:
-    branches: [ main ]
-
-
+  pull_request:
+  schedule:
+    - cron: '0 0 * * *'
 jobs:
-  # This workflow contains a single job called 'build'
-	build:
-		# The type of runner that the job will run on
-		runs-on:
-			- self-hosted
-		# Steps represent a sequence of tasks that will be executed as part of the job
-		steps:
+  tests:
+    runs-on: self-hosted
+    strategy:
+      fail-fast: true
+      matrix:
+        php: [8.0, 8.1]
+        wordpress: [^5.0, ^6.0]
+        exclude:
+          - php: 7.4
+            wordpress: ^4.0
 
-			# check out your repository under $GITHUB_WORKSPACE, so your job can access it
-			- uses: actions/checkout@main
+    name: PHP ${{ matrix.php }} - Wordpress ${{ matrix.wordpress }}
 
-			# Runs a single command using the runners shell
-			- name: Run a one-line script
-				run: |
-					echo Hello, world!
-					sleep 15
-					echo GoodBye!
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          extensions: dom, curl, libxml, mbstring, zip
+          tools: composer:v2
+          coverage: none
+        env:
+          COMPOSER_TOKEN: ${{secrets.DEPLOY_TOKEN}}
+      - name: Install dependencies
+        run: composer update --prefer-dist --no-interaction --no-progress
+      - name: Execute tests
+        run: vendor/bin/phpunit --verbose
