@@ -9,25 +9,25 @@ on:
   push:
     branches: [ main ]
 
-	# Allow you to run this workflow manually from the Actions tab
-	workflow_dispatch:
+				# Allow you to run this workflow manually from the Actions tab
+				workflow_dispatch:
 
 
 jobs:
-  # This workflow contains a single job called 'build'
-	build:
-	# The type of runner that the job will run on
-	runs-on:
-		- self-hosted
-	# Steps represent a sequence of tasks that will be executed as part of the job
-	steps:
+			# This workflow contains a single job called 'build'
+			build:
+						# The type of runner that the job will run on
+						runs-on:
+										- self-hosted
+						# Steps represent a sequence of tasks that will be executed as part of the job
+						steps:
 
-		# check out your repository under $GITHUB_WORKSPACE, so your job can access it
-		- uses: actions/checkout@main
+									# check out your repository under $GITHUB_WORKSPACE, so your job can access it
+									- uses: actions/checkout@main
 
-		# Runs a single command using the runners shell
-		- name: Run a one-line script
-			run: |
-				echo Hello, world!
-				sleep 15
-				echo GoodBye!
+									# Runs a single command using the runners shell
+									- name: Run a one-line script
+													run: |
+																echo Hello, world!
+																sleep 15
+																echo GoodBye!
